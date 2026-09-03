@@ -3,66 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>카톡 과제 제출 체크</title>
+  <title>과제 제출 기록</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="shell">
-    <header>
-      <div><p class="eyebrow">KAKAO ASSIGNMENT CHECKER</p><h1>카톡 과제 제출 체크</h1><p>대화록 한 번으로 제출 현황을 빠르게 정리하세요.</p></div>
-      <span class="privacy">● 모든 데이터는 이 브라우저에서만 처리됩니다</span>
-    </header>
-
-    <nav class="tabs" aria-label="화면 선택">
-      <button class="tab active" data-tab="daily">일별 제출 현황</button>
-      <button class="tab" data-tab="stats">기간 통계</button>
-      <button class="tab" data-tab="members">멤버 관리</button>
-    </nav>
-
-    <section class="panel upload-panel">
-      <div id="dropZone" class="drop-zone" tabindex="0">
-        <div class="upload-icon">⇧</div><strong>카톡 .txt 파일을 여기에 놓으세요</strong>
-        <span>또는 클릭해서 파일 선택</span><input id="fileInput" type="file" accept=".txt,text/plain" hidden>
-      </div>
-      <div class="divider"><span>또는 텍스트 직접 붙여넣기</span></div>
-      <textarea id="chatText" rows="7" placeholder="카카오톡 내보내기 내용을 붙여넣으세요..."></textarea>
-      <div class="action-row"><button id="parseBtn" class="primary">대화 분석하기</button><span id="parseMeta" class="muted"></span></div>
-      <div id="notice" class="notice hidden" role="alert"></div>
-    </section>
-    <details class="panel test-panel" open>
-      <summary>파서 자체 테스트 <span id="testSummary">실행 중…</span></summary>
-      <div id="testResults" class="test-results"></div>
-    </details>
-
-    <section id="daily" class="view active-view">
-      <div class="panel controls">
-        <label>집계 날짜<input id="targetDate" type="date"></label>
-        <label class="grow">제출 인정 키워드<input id="keywords" type="text"></label>
-        <label class="check"><input id="attachmentOption" type="checkbox" checked> 사진/파일/링크만 올려도 제출로 인정</label>
-      </div>
-      <div class="summary-grid">
-        <article class="metric"><span>전체</span><strong id="totalCount">0</strong><small>명</small></article>
-        <article class="metric green"><span>제출</span><strong id="submittedCount">0</strong><small>명</small></article>
-        <article class="metric red"><span>미제출</span><strong id="missingCount">0</strong><small>명</small></article>
-        <article class="metric progress-card"><span>제출률 <b id="rateText">0%</b></span><div class="progress"><i id="progressBar"></i></div></article>
-      </div>
-      <div class="panel table-panel">
-        <div class="section-head"><div><h2>제출 현황</h2><p id="dailyDescription">대화록을 분석하면 결과가 표시됩니다.</p></div><div><button id="copyBtn" class="secondary">미제출자 명단 복사</button><button id="csvBtn" class="secondary">결과 CSV 내려받기</button></div></div>
-        <div class="table-wrap"><table><thead><tr><th>이름</th><th>상태</th><th>제출시각</th><th>근거 메시지 원문</th></tr></thead><tbody id="resultBody"><tr><td colspan="4" class="empty">등록된 멤버와 대화록을 준비해 주세요.</td></tr></tbody></table></div>
-      </div>
-    </section>
-
-    <section id="stats" class="view">
-      <div class="panel controls"><label>시작일<input id="startDate" type="date"></label><label>종료일<input id="endDate" type="date"></label><button id="statsBtn" class="primary">기간 통계 보기</button></div>
-      <div class="panel table-panel"><div class="section-head"><div><h2>기간 통계</h2><p id="statsDescription">날짜 범위를 선택하세요.</p></div></div><div class="table-wrap"><table><thead><tr><th>이름</th><th>제출 횟수</th><th>집계 일수</th><th>개근 여부</th></tr></thead><tbody id="statsBody"><tr><td colspan="4" class="empty">통계를 조회해 주세요.</td></tr></tbody></table></div></div>
-    </section>
-
-    <section id="members" class="view">
-      <div class="panel"><div class="section-head"><div><h2>멤버 관리</h2><p>CSV로 여러 명을 한 번에 등록할 수 있습니다. 별칭은 <code>|</code>로 구분합니다.</p></div><div class="member-actions"><button id="importMembersBtn" class="secondary">CSV 가져오기</button><input id="memberFileInput" type="file" accept=".csv,text/csv" hidden><button id="exportMembersBtn" class="secondary">명단 CSV 내보내기</button><button id="addMemberBtn" class="primary">+ 멤버 추가</button></div></div><div id="memberList" class="member-list"></div></div>
-      <div id="unknownPanel" class="panel hidden"><div class="section-head"><div><h2>미등록 참여자</h2><p>새 멤버로 추가하거나 기존 멤버의 별칭으로 연결하세요.</p></div></div><div id="unknownList" class="unknown-list"></div></div>
-    </section>
+    <header><div><p class="eyebrow">AI LEARNING CREW</p><h1>과제 제출 기록</h1><p>오늘의 결과물 링크를 남겨 주세요.</p></div><span class="privacy">● 이 브라우저에 제출 기록 저장</span></header>
+    <nav class="tabs" aria-label="화면 선택"><button class="tab active" data-tab="submit">과제 제출</button><button class="tab" data-tab="history">제출 현황</button><button class="tab" data-tab="members">회원 관리</button></nav>
+    <section id="submit" class="view active-view"><div class="panel submit-card"><div class="section-head"><div><h2>과제 제출하기</h2><p>회원 이름과 날짜를 선택하고 결과물 링크를 입력하세요.</p></div><span class="today-label" id="todayLabel"></span></div><form id="submissionForm"><div class="form-grid"><label>회원 이름<select id="submitter" required><option value="">이름을 선택하세요</option></select></label><label>제출 날짜<input id="submissionDate" type="date" required></label></div><label>결과물 링크<input id="resultUrl" type="url" placeholder="https://..." required></label><label>간단한 메모 <span class="optional">선택</span><textarea id="submissionNote" rows="3" placeholder="무엇을 만들었는지 짧게 적어 주세요."></textarea></label><div class="action-row"><button class="primary" type="submit">제출 기록 남기기</button><span class="muted">같은 날짜에 다시 제출하면 기존 기록이 갱신됩니다.</span></div></form><div id="submitNotice" class="notice hidden" role="status"></div></div></section>
+    <section id="history" class="view"><div class="panel controls"><label>조회 날짜<input id="historyDate" type="date"></label><button id="exportSubmissionsBtn" class="secondary">제출 기록 CSV</button></div><div class="summary-grid"><article class="metric"><span>전체 회원</span><strong id="totalCount">0</strong><small>명</small></article><article class="metric green"><span>제출</span><strong id="submittedCount">0</strong><small>명</small></article><article class="metric red"><span>미제출</span><strong id="missingCount">0</strong><small>명</small></article><article class="metric progress-card"><span>제출률 <b id="rateText">0%</b></span><div class="progress"><i id="progressBar"></i></div></article></div><div class="panel table-panel"><div class="section-head"><div><h2 id="historyTitle">제출 현황</h2><p id="historyDescription"></p></div><button id="copyMissingBtn" class="secondary">미제출자 복사</button></div><div class="table-wrap"><table><thead><tr><th>회원</th><th>상태</th><th>제출 시각</th><th>결과물</th><th>메모</th></tr></thead><tbody id="historyBody"></tbody></table></div></div><div class="panel"><div class="section-head"><div><h2>최근 제출 기록</h2><p>저장된 모든 제출 이력을 확인합니다.</p></div></div><div id="recentList" class="recent-list"></div></div></section>
+    <section id="members" class="view"><div class="panel"><div class="section-head"><div><h2>회원 관리</h2><p>회원 이름과 카톡 별칭을 관리합니다. 변경 내용은 이 브라우저에 저장됩니다.</p></div><div class="member-actions"><button id="importMembersBtn" class="secondary">CSV 가져오기</button><input id="memberFileInput" type="file" accept=".csv,text/csv" hidden><button id="exportMembersBtn" class="secondary">명단 CSV 내보내기</button><button id="addMemberBtn" class="primary">+ 회원 추가</button></div></div><div id="memberList" class="member-list"></div></div></section>
   </main>
-  <template id="memberTemplate"><div class="member-row"><input class="member-name" aria-label="이름"><input class="member-aliases" aria-label="별칭" placeholder="별칭1, 별칭2"><button class="danger remove-member">삭제</button></div></template>
+  <template id="memberTemplate"><div class="member-row"><input class="member-name" aria-label="이름"><input class="member-aliases" aria-label="별칭" placeholder="별칭1|별칭2"><button class="danger remove-member">삭제</button></div></template>
   <script type="module" src="app.js"></script>
 </body>
 </html>
