@@ -27,6 +27,24 @@ function loadMembers() {
 }
 function saveMembers() { localStorage.setItem(STORAGE_KEY, JSON.stringify(members)); }
 function escapeHtml(value) { const el = document.createElement('div'); el.textContent = value ?? ''; return el.innerHTML; }
+function parseCsvLine(line) {
+  const fields = []; let field = ''; let quoted = false;
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (char === '"' && line[i + 1] === '"' && quoted) { field += '"'; i++; }
+    else if (char === '"') quoted = !quoted;
+    else if (char === ',' && !quoted) { fields.push(field.trim()); field = ''; }
+    else field += char;
+  }
+  fields.push(field.trim());
+  return fields;
+}
+function parseMembersCsv(input) {
+  return String(input).replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n').split('\n')
+    .map(line => line.trim()).filter(Boolean).map(parseCsvLine)
+    .filter(fields => fields[0] && !/^이름$/i.test(fields[0]))
+    .map(fields => ({ id: crypto.randomUUID(), name: fields[0], aliases: (fields[1] || '').split(/[|;]/).map(v => v.trim()).filter(Boolean) }));
+}
 function aliasesOf(member) { return [member.name, ...member.aliases].map(v => v.trim()).filter(Boolean); }
 function memberForSender(sender) { return members.find(member => aliasesOf(member).includes(sender)); }
 function formatTime(date) { return new Intl.DateTimeFormat('ko-KR', { hour: '2-digit', minute: '2-digit' }).format(date); }
@@ -150,6 +168,23 @@ async function loadFile(file) {
 $('parseBtn').addEventListener('click', analyze);
 ['targetDate', 'keywords', 'attachmentOption'].forEach(id => $(id).addEventListener('change', renderDaily));
 $('addMemberBtn').addEventListener('click', () => { members.push({ id: crypto.randomUUID(), name: '새 멤버', aliases: [] }); saveMembers(); renderMembers(); });
+$('importMembersBtn').addEventListener('click', () => $('memberFileInput').click());
+$('memberFileInput').addEventListener('change', async e => {
+  const file = e.target.files[0]; if (!file) return;
+  try {
+    const imported = parseMembersCsv(await file.text());
+    if (!imported.length) throw new Error('가져올 멤버가 없습니다. `이름,별칭` 형식을 확인해 주세요.');
+    members = imported; saveMembers(); renderMembers(); renderDaily();
+    showNotice(`${imported.length}명의 멤버를 가져왔습니다.`, 'success');
+  } catch (error) { showNotice(error.message); }
+  e.target.value = '';
+});
+$('exportMembersBtn').addEventListener('click', () => {
+  const quote = value => `"${String(value ?? '').replaceAll('"', '""')}"`;
+  const rows = [['이름', '별칭'], ...members.map(member => [member.name, member.aliases.join('|')])];
+  const blob = new Blob(['\uFEFF' + rows.map(row => row.map(quote).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = '카톡_멤버_명단.csv'; link.click(); URL.revokeObjectURL(link.href);
+});
 $('memberList').addEventListener('input', commitMemberInputs);
 $('memberList').addEventListener('click', e => { if (!e.target.classList.contains('remove-member')) return; members = members.filter(m => m.id !== e.target.closest('.member-row').dataset.id); saveMembers(); renderMembers(); renderDaily(); });
 $('unknownList').addEventListener('click', e => { if (!e.target.classList.contains('add-unknown')) return; const sender = e.target.dataset.sender; members.push({ id: crypto.randomUUID(), name: sender, aliases: [] }); saveMembers(); renderMembers(); renderDaily(); });
