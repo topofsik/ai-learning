@@ -163,8 +163,23 @@ $('fileInput').addEventListener('change', e => loadFile(e.target.files[0]));
 async function loadFile(file) {
   if (!file) return;
   if (!file.name.toLowerCase().endsWith('.txt')) { showNotice('.txt 파일만 업로드할 수 있습니다.'); return; }
-  $('chatText').value = await file.text(); $('parseMeta').textContent = file.name; await analyze();
+  try {
+    $('chatText').value = await readTextFile(file);
+    $('parseMeta').textContent = `${file.name} 불러옴`;
+    await analyze();
+  } catch { showNotice('파일을 읽지 못했습니다. 파일을 다시 저장한 뒤 시도해 주세요.'); }
 }
+function readTextFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || '').replace(/^\uFEFF/, ''));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(file, 'UTF-8');
+  });
+}
+$('dropZone').addEventListener('dragover', e => { e.dataTransfer.dropEffect = 'copy'; });
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => { if (!$('dropZone').contains(e.target)) e.preventDefault(); });
 $('parseBtn').addEventListener('click', analyze);
 ['targetDate', 'keywords', 'attachmentOption'].forEach(id => $(id).addEventListener('change', renderDaily));
 $('addMemberBtn').addEventListener('click', () => { members.push({ id: crypto.randomUUID(), name: '새 멤버', aliases: [] }); saveMembers(); renderMembers(); });
