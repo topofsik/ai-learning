@@ -2,6 +2,7 @@ import { parseKakaoChat, isAttachmentOrLink, dateKey } from './parser.js';
 
 const DEFAULT_KEYWORDS = ['과제제출', '과제 제출', '제출완료', '제출 완료', '제출합니다', '완료', '제출'];
 const STORAGE_KEY = 'kakao-assignment-members-v1';
+const DEFAULT_MEMBER_NAMES = ['강보람', '김남희', '김보영', '김수경', '남수현', '민경', '박윤희', '백근혜', '서윤정', '신봉일', '안태욱', '양소희', '오동민', '오혜숙', '오희주', '이경훈', '이길례', '장소향', '정유진', '조영임', '주영순', '최진웅', '한재림', '홍민지', '황주애'];
 const $ = (id) => document.getElementById(id);
 let messages = [];
 let members = loadMembers();
@@ -22,8 +23,11 @@ function runParserSelfTests() {
 }
 
 function loadMembers() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch { return []; }
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (Array.isArray(saved)) return saved;
+  } catch { /* 손상된 저장값이면 기본 명단으로 시작한다. */ }
+  return DEFAULT_MEMBER_NAMES.map(name => ({ id: crypto.randomUUID(), name, aliases: [] }));
 }
 function saveMembers() { localStorage.setItem(STORAGE_KEY, JSON.stringify(members)); }
 function escapeHtml(value) { const el = document.createElement('div'); el.textContent = value ?? ''; return el.innerHTML; }
