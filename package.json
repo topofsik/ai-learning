@@ -1,0 +1,9 @@
+{
+  "name": "kakao-assignment-checker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test parser.test.mjs"
+  }
+}

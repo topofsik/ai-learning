@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카톡 과제 제출 체크</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div><p class="eyebrow">KAKAO ASSIGNMENT CHECKER</p><h1>카톡 과제 제출 체크</h1><p>대화록 한 번으로 제출 현황을 빠르게 정리하세요.</p></div>
+      <span class="privacy">● 모든 데이터는 이 브라우저에서만 처리됩니다</span>
+    </header>
+
+    <nav class="tabs" aria-label="화면 선택">
+      <button class="tab active" data-tab="daily">일별 제출 현황</button>
+      <button class="tab" data-tab="stats">기간 통계</button>
+      <button class="tab" data-tab="members">멤버 관리</button>
+    </nav>
+
+    <section class="panel upload-panel">
+      <div id="dropZone" class="drop-zone" tabindex="0">
+        <div class="upload-icon">⇧</div><strong>카톡 .txt 파일을 여기에 놓으세요</strong>
+        <span>또는 클릭해서 파일 선택</span><input id="fileInput" type="file" accept=".txt,text/plain" hidden>
+      </div>
+      <div class="divider"><span>또는 텍스트 직접 붙여넣기</span></div>
+      <textarea id="chatText" rows="7" placeholder="카카오톡 내보내기 내용을 붙여넣으세요..."></textarea>
+      <div class="action-row"><button id="parseBtn" class="primary">대화 분석하기</button><span id="parseMeta" class="muted"></span></div>
+      <div id="notice" class="notice hidden" role="alert"></div>
+    </section>
+    <details class="panel test-panel" open>
+      <summary>파서 자체 테스트 <span id="testSummary">실행 중…</span></summary>
+      <div id="testResults" class="test-results"></div>
+    </details>
+
+    <section id="daily" class="view active-view">
+      <div class="panel controls">
+        <label>집계 날짜<input id="targetDate" type="date"></label>
+        <label class="grow">제출 인정 키워드<input id="keywords" type="text"></label>
+        <label class="check"><input id="attachmentOption" type="checkbox" checked> 사진/파일/링크만 올려도 제출로 인정</label>
+      </div>
+      <div class="summary-grid">
+        <article class="metric"><span>전체</span><strong id="totalCount">0</strong><small>명</small></article>
+        <article class="metric green"><span>제출</span><strong id="submittedCount">0</strong><small>명</small></article>
+        <article class="metric red"><span>미제출</span><strong id="missingCount">0</strong><small>명</small></article>
+        <article class="metric progress-card"><span>제출률 <b id="rateText">0%</b></span><div class="progress"><i id="progressBar"></i></div></article>
+      </div>
+      <div class="panel table-panel">
+        <div class="section-head"><div><h2>제출 현황</h2><p id="dailyDescription">대화록을 분석하면 결과가 표시됩니다.</p></div><div><button id="copyBtn" class="secondary">미제출자 명단 복사</button><button id="csvBtn" class="secondary">결과 CSV 내려받기</button></div></div>
+        <div class="table-wrap"><table><thead><tr><th>이름</th><th>상태</th><th>제출시각</th><th>근거 메시지 원문</th></tr></thead><tbody id="resultBody"><tr><td colspan="4" class="empty">등록된 멤버와 대화록을 준비해 주세요.</td></tr></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="stats" class="view">
+      <div class="panel controls"><label>시작일<input id="startDate" type="date"></label><label>종료일<input id="endDate" type="date"></label><button id="statsBtn" class="primary">기간 통계 보기</button></div>
+      <div class="panel table-panel"><div class="section-head"><div><h2>기간 통계</h2><p id="statsDescription">날짜 범위를 선택하세요.</p></div></div><div class="table-wrap"><table><thead><tr><th>이름</th><th>제출 횟수</th><th>집계 일수</th><th>개근 여부</th></tr></thead><tbody id="statsBody"><tr><td colspan="4" class="empty">통계를 조회해 주세요.</td></tr></tbody></table></div></div>
+    </section>
+
+    <section id="members" class="view">
+      <div class="panel"><div class="section-head"><div><h2>멤버 관리</h2><p>쉼표로 여러 카톡 닉네임을 등록할 수 있습니다.</p></div><button id="addMemberBtn" class="primary">+ 멤버 추가</button></div><div id="memberList" class="member-list"></div></div>
+      <div id="unknownPanel" class="panel hidden"><div class="section-head"><div><h2>미등록 참여자</h2><p>새 멤버로 추가하거나 기존 멤버의 별칭으로 연결하세요.</p></div></div><div id="unknownList" class="unknown-list"></div></div>
+    </section>
+  </main>
+  <template id="memberTemplate"><div class="member-row"><input class="member-name" aria-label="이름"><input class="member-aliases" aria-label="별칭" placeholder="별칭1, 별칭2"><button class="danger remove-member">삭제</button></div></template>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
