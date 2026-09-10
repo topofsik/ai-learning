@@ -71,8 +71,8 @@ async function refreshData() {
 }
 function renderSubmitterOptions() {
   const current = $('submitter').value;
-  $('submitter').innerHTML = '<option value="">이름을 선택하세요</option>' + members.map(member => `<option value="${escapeHtml(member.id)}">${escapeHtml(member.name)}</option>`).join('');
-  if (members.some(member => member.id === current)) $('submitter').value = current;
+  $('memberNameOptions').innerHTML = members.map(member => `<option value="${escapeHtml(member.name)}"></option>`).join('');
+  $('submitter').value = current;
 }
 function renderAdminUi() {
   document.querySelectorAll('[data-admin-only]').forEach(element => { element.hidden = !isAdmin; });
@@ -160,11 +160,15 @@ function csvDownload(name, rows) {
 }
 async function submit(event) {
   event.preventDefault();
-  const memberId = $('submitter').value;
+  const typedName = $('submitter').value.trim();
   const date = $('submissionDate').value;
   const url = $('resultUrl').value.trim();
   const note = $('submissionNote').value.trim();
-  if (!memberId || !date || !url) { showNotice('회원 이름, 제출 날짜, 결과물 링크를 모두 입력해 주세요.'); return; }
+  const normalizedName = typedName.replace(/\s+/g, '').toLowerCase();
+  const member = members.find(item => item.name.replace(/\s+/g, '').toLowerCase() === normalizedName);
+  if (!typedName || !date || !url) { showNotice('회원 이름, 제출 날짜, 결과물 링크를 모두 입력해 주세요.'); return; }
+  if (!member) { showNotice('회원 관리에 등록된 이름을 정확히 입력해 주세요.'); return; }
+  const memberId = member.id;
   try { new URL(url); } catch { showNotice('결과물 링크는 https:// 또는 http:// 주소로 입력해 주세요.'); return; }
   const old = submissions.find(submission => submission.memberId === memberId && submission.date === date);
   if (old && !isAdmin) { showNotice('이 회원은 해당 날짜에 이미 제출했습니다. 수정이 필요하면 관리자에게 요청해 주세요.'); return; }
