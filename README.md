@@ -13,6 +13,7 @@
 - Supabase 공유 데이터베이스에 회원·제출기록 저장
 - 회원은 로그인 없이 전체 과제와 제출물 확인
 - 관리자 비밀번호 로그인 후 회원명단·제출기록 관리
+- 휴대폰 홈 화면에 앱으로 설치 가능(PWA)
 
 ## 공유 저장소 설정
 
@@ -31,6 +32,8 @@ python -m http.server 8000
 ```
 
 `http://localhost:8000`을 열면 됩니다. 공개 배포본은 [GitHub Pages](https://topofsik.github.io/ai-learning/)에서 확인할 수 있습니다.
+
+휴대폰에서는 공개 배포본을 연 뒤 Android Chrome의 **홈 화면에 추가** 또는 iPhone Safari의 **공유 → 홈 화면에 추가**를 선택하면 앱처럼 사용할 수 있습니다.
 
 ## 저장 범위
 

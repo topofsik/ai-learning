@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#18253f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>과제 제출 기록</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon.svg">
 </head>
 <body>
   <main class="shell">
@@ -16,5 +21,10 @@
   </main>
   <template id="memberTemplate"><div class="member-row"><input class="member-name" aria-label="이름"><input class="member-aliases" aria-label="별칭" placeholder="별칭1|별칭2"><button class="danger remove-member">삭제</button></div></template>
   <script type="module" src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+    }
+  </script>
 </body>
 </html>
